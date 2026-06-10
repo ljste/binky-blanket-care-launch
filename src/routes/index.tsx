@@ -13,6 +13,8 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { Cloud } from "lucide-react";
+import heroImage from "@/assets/hero-mother-baby.jpg";
+
 
 
 export const Route = createFileRoute("/")({
@@ -331,7 +333,7 @@ function Services() {
       ],
     },
     {
-      icon: <Icon iconNode={teddyBear} className="h-6 w-6" />,
+      icon: <Cloud className="h-6 w-6" />,
       title: "Nursery Preparation",
       price: "Starting at $350 flat rate",
       description:
