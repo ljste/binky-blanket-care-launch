@@ -12,9 +12,8 @@ import {
   Sparkles,
   ChevronRight,
 } from "lucide-react";
-import { Icon } from "lucide-react";
-import { teddyBear } from "@lucide/lab";
-import heroImage from "@/assets/hero-mother-baby.jpg";
+import { Cloud } from "lucide-react";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
