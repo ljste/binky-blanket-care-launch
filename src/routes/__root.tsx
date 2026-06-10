@@ -10,7 +10,11 @@ import {
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
+import logoMark from "../assets/logo-no-text.webp";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+
+const siteDescription =
+  "Warm, professional postpartum and newborn care for families who deserve rest, reassurance, and support.";
 
 function NotFoundComponent() {
   return (
@@ -77,19 +81,35 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "Binky & Blanket Care" },
+      { name: "description", content: siteDescription },
+      { name: "author", content: "Binky & Blanket Care" },
+      { name: "application-name", content: "Binky & Blanket Care" },
+      { name: "robots", content: "index, follow" },
+      { name: "theme-color", content: "#f7f0df" },
+      { property: "og:title", content: "Binky & Blanket Care" },
+      { property: "og:description", content: siteDescription },
       { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "Binky & Blanket Care" },
+      { property: "og:image", content: logoMark },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Binky & Blanket Care" },
+      { name: "twitter:description", content: siteDescription },
+      { name: "twitter:image", content: logoMark },
     ],
     links: [
       {
         rel: "stylesheet",
         href: appCss,
+      },
+      {
+        rel: "icon",
+        type: "image/webp",
+        href: logoMark,
+      },
+      {
+        rel: "apple-touch-icon",
+        href: logoMark,
       },
     ],
   }),

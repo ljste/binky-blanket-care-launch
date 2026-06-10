@@ -1,21 +1,39 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { ValidationError, useForm } from "@formspree/react";
+import { useState, type ReactNode } from "react";
 import {
-  Moon,
-  Sun,
-  Leaf,
-  Heart,
-  Menu,
-  X,
-  Plus,
-  Minus,
-  Sparkles,
   ChevronRight,
+  Cloud,
+  Heart,
+  Leaf,
+  Menu,
+  Minus,
+  Moon,
+  Plus,
+  Sparkles,
+  Sun,
+  X,
 } from "lucide-react";
-import { Cloud } from "lucide-react";
-import heroImage from "@/assets/hero-mother-baby.jpg";
+import aboutPortrait from "@/assets/headshot-portrait.jpg";
+import contactImage from "@/assets/IMG_3764.webp";
+import heroImage from "@/assets/IMG_3759.webp";
+import footerLogo from "@/assets/logo.webp";
+import logoMark from "@/assets/logo-no-text.webp";
 
+const FORMSPREE_FORM_ID = "xpqejpql";
+const FORMSPREE_ENDPOINT = `https://formspree.io/f/${FORMSPREE_FORM_ID}`;
 
+type ConsultationFormValues = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone?: string;
+  location?: string;
+  due?: string;
+  service: string;
+  message: string;
+  _subject?: string;
+};
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -30,6 +48,12 @@ export const Route = createFileRoute("/")({
       {
         property: "og:description",
         content: "Soft support for new beginnings — postpartum and newborn care.",
+      },
+      { name: "twitter:title", content: "Binky & Blanket Care" },
+      {
+        name: "twitter:description",
+        content:
+          "Warm postpartum and newborn care for families who deserve rest, reassurance, and support.",
       },
     ],
   }),
@@ -64,12 +88,22 @@ function Home() {
 /* ---------------- Header ---------------- */
 function Header() {
   const [open, setOpen] = useState(false);
+  const mobileMenuId = "mobile-navigation";
+
   return (
     <header className="sticky top-0 z-50 backdrop-blur-md bg-background/80 border-b border-border/60">
       <div className="mx-auto max-w-7xl px-5 sm:px-8 h-18 py-4 flex items-center justify-between gap-4">
         <a href="#home" className="flex items-center gap-2.5 min-w-0">
-          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary/30 ring-1 ring-primary/40">
-            <Heart className="h-5 w-5 text-accent" fill="currentColor" />
+          <span className="grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-full bg-primary/30 ring-1 ring-primary/40">
+            <img
+              src={logoMark}
+              alt=""
+              className="h-9 w-9 object-contain"
+              width={840}
+              height={748}
+              decoding="async"
+              aria-hidden="true"
+            />
           </span>
           <span className="font-display text-lg sm:text-xl tracking-tight text-accent truncate">
             Binky &amp; Blanket Care
@@ -95,7 +129,9 @@ function Header() {
         </nav>
 
         <button
-          aria-label="Open menu"
+          aria-controls={mobileMenuId}
+          aria-expanded={open}
+          aria-label={open ? "Close menu" : "Open menu"}
           className="md:hidden rounded-full p-2 hover:bg-secondary"
           onClick={() => setOpen((v) => !v)}
         >
@@ -104,7 +140,7 @@ function Header() {
       </div>
 
       {open && (
-        <div className="md:hidden border-t border-border/60 bg-card">
+        <div id={mobileMenuId} className="md:hidden border-t border-border/60 bg-card">
           <div className="px-5 py-4 flex flex-col gap-1">
             {NAV.map((n) => (
               <a
@@ -140,48 +176,45 @@ function Hero() {
 
       <div className="mx-auto max-w-7xl px-5 sm:px-8 pt-14 pb-20 lg:pt-24 lg:pb-28 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
         <div>
-          <span className="inline-flex items-center gap-2 rounded-full bg-secondary px-4 py-1.5 text-xs uppercase tracking-[0.18em] text-accent/80">
+          <span className="inline-flex max-w-full items-center gap-2 rounded-full bg-secondary px-4 py-1.5 text-xs uppercase tracking-[0.18em] text-accent/80">
             <Sparkles className="h-3.5 w-3.5" />
-            Soft support for new beginnings
+            <span className="leading-relaxed">Soft support for new beginnings</span>
           </span>
           <h1 className="mt-6 font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] text-accent">
-            Welcome to{" "}
-            <span className="italic text-foreground">Binky &amp; Blanket Care</span>
+            Welcome to <span className="italic text-foreground">Binky &amp; Blanket Care</span>
           </h1>
           <p className="mt-5 text-lg text-foreground/80 max-w-xl">
-            Soft, steady postpartum and newborn care for families who deserve
-            rest, reassurance, and support.
+            Soft, steady postpartum and newborn care for families who deserve rest, reassurance, and
+            support.
           </p>
           <div className="mt-6 space-y-4 text-foreground/75 max-w-xl leading-relaxed">
             <p>
-              The postpartum journey can be beautiful, exhausting, emotional,
-              and overwhelming — all at the same time.
+              The postpartum journey can be beautiful, exhausting, emotional, and overwhelming — all
+              at the same time.
             </p>
             <p>
-              At Binky &amp; Blanket Care, I provide practical, educational,
-              and emotional support so families can focus on healing, bonding,
-              and adjusting to life with their new baby.
+              At Binky &amp; Blanket Care, I provide practical, educational, and emotional support
+              so families can focus on healing, bonding, and adjusting to life with their new baby.
             </p>
           </div>
 
           <div className="mt-9 flex flex-wrap gap-3">
             <a
               href="#contact"
-              className="inline-flex items-center gap-2 rounded-full bg-accent text-accent-foreground px-7 py-3.5 text-sm font-semibold shadow-[var(--shadow-cozy)] hover:opacity-90 transition"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-accent text-accent-foreground px-7 py-3.5 text-sm font-semibold shadow-[var(--shadow-cozy)] hover:opacity-90 transition sm:w-auto"
             >
               Request Support
               <ChevronRight className="h-4 w-4" />
             </a>
             <a
               href="#services"
-              className="inline-flex items-center rounded-full bg-secondary text-foreground px-7 py-3.5 text-sm font-semibold border border-border/70 hover:bg-muted transition"
+              className="inline-flex w-full items-center justify-center rounded-full bg-secondary text-foreground px-7 py-3.5 text-sm font-semibold border border-border/70 hover:bg-muted transition sm:w-auto"
             >
               View Services
             </a>
           </div>
         </div>
 
-        {/* Hero image */}
         <div className="relative">
           <div className="pointer-events-none absolute -top-6 -left-6 h-24 w-24 rounded-full bg-primary/40" />
           <div className="pointer-events-none absolute -bottom-6 -right-4 h-32 w-32 rounded-full bg-accent/15" />
@@ -190,15 +223,16 @@ function Hero() {
           <div className="relative rounded-[2.5rem] overflow-hidden shadow-[var(--shadow-cozy)] ring-1 ring-border/60 bg-card aspect-[4/5]">
             <img
               src={heroImage}
-              alt="A mother gently cradling her newborn wrapped in a cream knit blanket"
+              alt="A parent gently holding a newborn baby's foot in warm morning light"
               className="h-full w-full object-cover"
-              width={1280}
-              height={1280}
+              width={1200}
+              height={1500}
+              decoding="async"
+              fetchPriority="high"
             />
-            <span className="sr-only">Add warm newborn/family photo here.</span>
           </div>
 
-          <div className="absolute -bottom-6 left-6 sm:left-10 rounded-2xl bg-card px-5 py-4 shadow-[var(--shadow-soft)] ring-1 ring-border/70 flex items-center gap-3">
+          <div className="absolute -bottom-6 left-4 right-4 sm:left-10 sm:right-auto rounded-2xl bg-card px-5 py-4 shadow-[var(--shadow-soft)] ring-1 ring-border/70 flex items-center gap-3">
             <span className="grid h-10 w-10 place-items-center rounded-full bg-primary/40">
               <Moon className="h-5 w-5 text-accent" />
             </span>
@@ -206,9 +240,7 @@ function Hero() {
               <div className="text-xs uppercase tracking-wider text-muted-foreground">
                 Trusted, gentle care
               </div>
-              <div className="text-sm font-semibold text-accent">
-                6+ years supporting families
-              </div>
+              <div className="text-sm font-semibold text-accent">6+ years supporting families</div>
             </div>
           </div>
         </div>
@@ -252,15 +284,13 @@ function HowICanHelp() {
     <section id="help" className="py-20 lg:py-28">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="max-w-2xl">
-          <span className="text-xs uppercase tracking-[0.18em] text-accent/70">
-            How I Can Help
-          </span>
+          <span className="text-xs uppercase tracking-[0.18em] text-accent/70">How I Can Help</span>
           <h2 className="mt-3 font-display text-3xl sm:text-4xl lg:text-5xl text-accent">
             How I Can Help Your Family
           </h2>
           <p className="mt-5 text-lg text-foreground/75">
-            Gentle, hands-on care that gives parents space to rest, recover,
-            and feel more confident during the postpartum season.
+            Gentle, hands-on care that gives parents space to rest, recover, and feel more confident
+            during the postpartum season.
           </p>
         </div>
 
@@ -268,22 +298,17 @@ function HowICanHelp() {
           {cards.map((c) => (
             <article
               key={c.title}
-              className="group rounded-[2rem] bg-card p-8 ring-1 ring-border/60 shadow-[var(--shadow-soft)] hover:shadow-[var(--shadow-cozy)] hover:-translate-y-1 transition-all duration-300"
+              className="group rounded-[2rem] bg-card p-6 sm:p-8 ring-1 ring-border/60 shadow-[var(--shadow-soft)] hover:shadow-[var(--shadow-cozy)] hover:-translate-y-1 transition-all duration-300"
             >
               <span className="inline-grid h-12 w-12 place-items-center rounded-2xl bg-primary/30 text-accent">
                 {c.icon}
               </span>
-              <h3 className="mt-6 font-display text-2xl text-accent">
-                {c.title}
-              </h3>
+              <h3 className="mt-6 font-display text-2xl text-accent">{c.title}</h3>
               <p className="mt-3 text-foreground/75 leading-relaxed">{c.text}</p>
               {c.list && (
                 <ul className="mt-5 grid grid-cols-1 gap-2">
                   {c.list.map((item) => (
-                    <li
-                      key={item}
-                      className="flex items-start gap-2 text-sm text-foreground/75"
-                    >
+                    <li key={item} className="flex items-start gap-2 text-sm text-foreground/75">
                       <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
                       {item}
                     </li>
@@ -351,8 +376,7 @@ function Services() {
       icon: <Leaf className="h-6 w-6" />,
       title: "Intensive Postpartum Care",
       price: "Custom Packages Available",
-      description:
-        "Personalized support plans for families needing more comprehensive care.",
+      description: "Personalized support plans for families needing more comprehensive care.",
       note: "Please inquire for pricing and availability.",
     },
   ];
@@ -361,15 +385,13 @@ function Services() {
     <section id="services" className="py-20 lg:py-28 bg-secondary/40">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="max-w-2xl">
-          <span className="text-xs uppercase tracking-[0.18em] text-accent/70">
-            Services
-          </span>
+          <span className="text-xs uppercase tracking-[0.18em] text-accent/70">Services</span>
           <h2 className="mt-3 font-display text-3xl sm:text-4xl lg:text-5xl text-accent">
             Care, shaped around your family
           </h2>
           <p className="mt-5 text-lg text-foreground/75">
-            Flexible postpartum care designed around your family's needs,
-            schedule, and season of life.
+            Flexible postpartum care designed around your family's needs, schedule, and season of
+            life.
           </p>
         </div>
 
@@ -377,50 +399,37 @@ function Services() {
           {services.map((s) => (
             <article
               key={s.title}
-              className="rounded-[2rem] bg-card p-8 ring-1 ring-border/60 shadow-[var(--shadow-soft)] flex flex-col"
+              className="rounded-[2rem] bg-card p-6 sm:p-8 ring-1 ring-border/60 shadow-[var(--shadow-soft)] flex flex-col"
             >
-              <div className="flex items-start justify-between gap-4">
+              <div className="flex flex-wrap items-start justify-between gap-4">
                 <span className="inline-grid h-14 w-14 place-items-center rounded-2xl bg-primary/30 text-accent">
                   {s.icon}
                 </span>
-                <div className="text-right">
+                <div className="text-left sm:text-right">
                   <div className="text-xs uppercase tracking-wider text-muted-foreground">
                     Investment
                   </div>
-                  <div className="font-display text-accent text-lg">
-                    {s.price}
-                  </div>
+                  <div className="font-display text-accent text-lg">{s.price}</div>
                 </div>
               </div>
-              <h3 className="mt-6 font-display text-2xl text-accent">
-                {s.title}
-              </h3>
+              <h3 className="mt-6 font-display text-2xl text-accent">{s.title}</h3>
               {s.minimum && (
                 <div className="mt-2 text-xs uppercase tracking-wider text-muted-foreground">
                   Minimum · {s.minimum}
                 </div>
               )}
-              <p className="mt-4 text-foreground/75 leading-relaxed">
-                {s.description}
-              </p>
+              <p className="mt-4 text-foreground/75 leading-relaxed">{s.description}</p>
               {s.includes && (
                 <ul className="mt-5 grid gap-2 sm:grid-cols-2">
                   {s.includes.map((i) => (
-                    <li
-                      key={i}
-                      className="flex items-start gap-2 text-sm text-foreground/75"
-                    >
+                    <li key={i} className="flex items-start gap-2 text-sm text-foreground/75">
                       <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
                       {i}
                     </li>
                   ))}
                 </ul>
               )}
-              {s.note && (
-                <p className="mt-5 text-sm italic text-muted-foreground">
-                  {s.note}
-                </p>
-              )}
+              {s.note && <p className="mt-5 text-sm italic text-muted-foreground">{s.note}</p>}
             </article>
           ))}
         </div>
@@ -459,24 +468,21 @@ function About() {
   ];
 
   return (
-    <section id="about" className="py-20 lg:py-28">
+    <section id="about" className="overflow-hidden py-20 lg:py-28">
       <div className="mx-auto max-w-7xl px-5 sm:px-8 grid lg:grid-cols-[1fr_1.1fr] gap-12 lg:gap-16">
-        {/* Portrait placeholder */}
         <div className="relative order-first lg:order-last">
           <div className="pointer-events-none absolute -top-6 -right-6 h-24 w-24 rounded-full bg-primary/40" />
           <div className="pointer-events-none absolute -bottom-6 -left-6 h-28 w-28 rounded-full bg-accent/15" />
-          <div className="relative rounded-[2.5rem] overflow-hidden ring-1 ring-border/60 shadow-[var(--shadow-cozy)] aspect-[4/5] bg-gradient-to-br from-secondary to-muted grid place-items-center">
-            <div className="text-center px-6">
-              <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-primary/40 text-accent">
-                <Heart className="h-7 w-7" />
-              </div>
-              <p className="mt-4 text-sm uppercase tracking-[0.2em] text-muted-foreground">
-                Image placeholder
-              </p>
-              <p className="mt-1 font-display text-xl text-accent">
-                Add Kamilla photo here
-              </p>
-            </div>
+          <div className="relative rounded-[2.5rem] overflow-hidden ring-1 ring-border/60 shadow-[var(--shadow-cozy)] aspect-[4/5] bg-card">
+            <img
+              src={aboutPortrait}
+              alt="Kamilla, postpartum and newborn care provider for Binky and Blanket Care"
+              className="h-full w-full object-cover object-center"
+              width={1400}
+              height={1320}
+              loading="lazy"
+              decoding="async"
+            />
           </div>
 
           {/* Training card */}
@@ -485,9 +491,7 @@ function About() {
               <span className="grid h-10 w-10 place-items-center rounded-2xl bg-primary/30 text-accent">
                 <Sparkles className="h-5 w-5" />
               </span>
-              <h3 className="font-display text-xl text-accent">
-                Professional Training
-              </h3>
+              <h3 className="font-display text-xl text-accent">Professional Training</h3>
             </div>
             <ul className="mt-5 space-y-3">
               {training.map((t) => (
@@ -501,66 +505,58 @@ function About() {
         </div>
 
         <div>
-          <span className="text-xs uppercase tracking-[0.18em] text-accent/70">
-            About Kamilla
-          </span>
+          <span className="text-xs uppercase tracking-[0.18em] text-accent/70">About Kamilla</span>
           <h2 className="mt-3 font-display text-3xl sm:text-4xl lg:text-5xl text-accent">
             Caring for Mothers. Supporting Families.
           </h2>
 
           <blockquote className="mt-7 rounded-[1.75rem] bg-secondary/60 ring-1 ring-border/60 p-6 sm:p-7">
             <p className="font-display italic text-xl sm:text-2xl text-accent leading-snug">
-              "I believe postpartum care begins with caring for the mother.
-              When mothers are supported, families thrive."
+              "I believe postpartum care begins with caring for the mother. When mothers are
+              supported, families thrive."
             </p>
           </blockquote>
 
           <div className="mt-7 space-y-5 text-foreground/80 leading-relaxed">
             <p>Hi, I'm Kamilla!</p>
             <p>
-              I was born and raised in Brazil in a large, loving family where
-              caring for one another was simply part of everyday life. One of my
-              greatest inspirations was my grandmother, a traditional midwife,
-              who shared generations of wisdom and practical newborn care
-              knowledge with our family. Many of the nurturing instincts I
-              carry today began with her teachings.
+              I was born and raised in Brazil in a large, loving family where caring for one another
+              was simply part of everyday life. One of my greatest inspirations was my grandmother,
+              a traditional midwife, who shared generations of wisdom and practical newborn care
+              knowledge with our family. Many of the nurturing instincts I carry today began with
+              her teachings.
             </p>
             <p>
-              My passion for postpartum care became deeply personal when I
-              helped support my own mother through postpartum depression.
-              Witnessing the emotional, physical, and mental challenges that
-              can accompany the postpartum period opened my eyes to how much
-              support mothers truly need during this vulnerable transition.
+              My passion for postpartum care became deeply personal when I helped support my own
+              mother through postpartum depression. Witnessing the emotional, physical, and mental
+              challenges that can accompany the postpartum period opened my eyes to how much support
+              mothers truly need during this vulnerable transition.
             </p>
             <p>
-              That experience led me to dedicate my career to postpartum and
-              newborn care, always keeping one belief at the center of my work:
-              when we care for the mother, we care for the entire family.
+              That experience led me to dedicate my career to postpartum and newborn care, always
+              keeping one belief at the center of my work: when we care for the mother, we care for
+              the entire family.
             </p>
             <p>
-              I do not romanticize postpartum recovery. While welcoming a baby
-              can be joyful, it can also be overwhelming, exhausting, lonely,
-              and emotionally demanding. My goal is to help families carry that
-              load by providing compassionate, practical, and evidence-based
-              support so parents never feel they have to navigate this season
-              alone.
+              I do not romanticize postpartum recovery. While welcoming a baby can be joyful, it can
+              also be overwhelming, exhausting, lonely, and emotionally demanding. My goal is to
+              help families carry that load by providing compassionate, practical, and
+              evidence-based support so parents never feel they have to navigate this season alone.
             </p>
             <p>
-              Over the past 6+ years, I have worked internationally with
-              families from diverse cultural backgrounds, parenting styles, and
-              family structures. These experiences have taught me that every
-              family is unique and deserves individualized support that honors
+              Over the past 6+ years, I have worked internationally with families from diverse
+              cultural backgrounds, parenting styles, and family structures. These experiences have
+              taught me that every family is unique and deserves individualized support that honors
               their values and needs.
             </p>
             <p>
-              My mission is simple: to provide the steady, nurturing support
-              that allows parents to rest, recover, build confidence, and enjoy
-              more meaningful moments with their growing family.
+              My mission is simple: to provide the steady, nurturing support that allows parents to
+              rest, recover, build confidence, and enjoy more meaningful moments with their growing
+              family.
             </p>
             <p className="font-display italic text-accent text-lg">
-              You don't have to carry the postpartum journey alone. Let me help
-              lighten the load. I look forward to supporting you during this
-              beautiful and transformative chapter.
+              You don't have to carry the postpartum journey alone. Let me help lighten the load. I
+              look forward to supporting you during this beautiful and transformative chapter.
             </p>
           </div>
         </div>
@@ -600,9 +596,7 @@ function FAQ() {
     <section id="faq" className="py-20 lg:py-28 bg-secondary/40">
       <div className="mx-auto max-w-4xl px-5 sm:px-8">
         <div className="text-center">
-          <span className="text-xs uppercase tracking-[0.18em] text-accent/70">
-            FAQ
-          </span>
+          <span className="text-xs uppercase tracking-[0.18em] text-accent/70">FAQ</span>
           <h2 className="mt-3 font-display text-3xl sm:text-4xl lg:text-5xl text-accent">
             Frequently Asked Questions
           </h2>
@@ -621,9 +615,7 @@ function FAQ() {
                   className="w-full flex items-center justify-between gap-4 text-left px-6 sm:px-8 py-5 sm:py-6"
                   aria-expanded={open}
                 >
-                  <span className="font-display text-lg sm:text-xl text-accent">
-                    {it.q}
-                  </span>
+                  <span className="font-display text-lg sm:text-xl text-accent">{it.q}</span>
                   <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary/30 text-accent">
                     {open ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                   </span>
@@ -644,48 +636,58 @@ function FAQ() {
 
 /* ---------------- Contact ---------------- */
 function Contact() {
-  const [sent, setSent] = useState(false);
+  const [state, handleSubmit] = useForm<ConsultationFormValues>(FORMSPREE_FORM_ID);
+  const formDescriptionId = "consultation-form-description";
+  const formHeadingId = "consultation-form-heading";
+  const formNoteId = "consultation-form-note";
+  const serviceHintId = "service-interest-hint";
+  const messageHintId = "family-support-hint";
+  const formErrorId = "consultation-form-error";
+  const serviceErrorId = "service-error";
+  const messageErrorId = "message-error";
+  const hasFieldError = (field: keyof ConsultationFormValues) =>
+    Boolean(state.errors?.getFieldErrors(field).length);
 
   return (
     <section id="contact" className="py-20 lg:py-28">
       <div className="mx-auto max-w-6xl px-5 sm:px-8 grid lg:grid-cols-[1fr_1.3fr] gap-10 lg:gap-14 items-start">
         <div className="lg:sticky lg:top-28">
-          <span className="text-xs uppercase tracking-[0.18em] text-accent/70">
-            Contact
-          </span>
-          <h2 className="mt-3 font-display text-3xl sm:text-4xl lg:text-5xl text-accent">
+          <span className="text-xs uppercase tracking-[0.18em] text-accent/70">Contact</span>
+          <h2
+            id={formHeadingId}
+            className="mt-3 font-display text-3xl sm:text-4xl lg:text-5xl text-accent"
+          >
             Schedule a Free Consultation
           </h2>
-          <p className="mt-5 text-foreground/75 leading-relaxed">
-            Tell me a little about your family, your due date or baby's age,
-            and what kind of support you are looking for. I'll follow up to
-            discuss availability and next steps.
+          <p id={formDescriptionId} className="mt-5 text-foreground/75 leading-relaxed">
+            Tell me a little about your family, your due date or baby's age, and what kind of
+            support you are looking for. I'll follow up to discuss availability and next steps.
           </p>
 
-          <div className="mt-8 rounded-[1.75rem] bg-secondary/60 ring-1 ring-border/60 p-6 grid place-items-center aspect-[4/3]">
-            <div className="text-center">
-              <div className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-primary/40 text-accent">
-                <Leaf className="h-6 w-6" />
-              </div>
-              <p className="mt-3 text-sm uppercase tracking-[0.2em] text-muted-foreground">
-                Image placeholder
-              </p>
-              <p className="font-display text-lg text-accent">
-                Soft nursery / baby detail
-              </p>
-            </div>
+          <div className="mt-8 overflow-hidden rounded-[1.75rem] bg-secondary/60 ring-1 ring-border/60 shadow-[var(--shadow-soft)] aspect-[4/3]">
+            <img
+              src={contactImage}
+              alt="A neatly organized nursery drawer with soft baby clothes and blankets"
+              className="h-full w-full object-cover"
+              width={1080}
+              height={1350}
+              loading="lazy"
+              decoding="async"
+            />
           </div>
         </div>
 
         <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            setSent(true);
-          }}
-          className="rounded-[2.5rem] bg-card ring-1 ring-border/60 shadow-[var(--shadow-cozy)] p-7 sm:p-10"
+          action={FORMSPREE_ENDPOINT}
+          method="POST"
+          onSubmit={handleSubmit}
+          aria-busy={state.submitting}
+          aria-describedby={`${formDescriptionId} ${formErrorId} ${formNoteId}`}
+          aria-labelledby={formHeadingId}
+          className="rounded-[2rem] sm:rounded-[2.5rem] bg-card ring-1 ring-border/60 shadow-[var(--shadow-cozy)] p-6 sm:p-10"
         >
-          {sent ? (
-            <div className="text-center py-10">
+          {state.succeeded ? (
+            <div className="text-center py-10" role="status" aria-live="polite">
               <div className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-primary/40 text-accent">
                 <Heart className="h-6 w-6" fill="currentColor" />
               </div>
@@ -693,36 +695,128 @@ function Contact() {
                 Thank you, your request has been received.
               </h3>
               <p className="mt-3 text-foreground/75">
-                I'll reach out personally within 1–2 days to talk about your
-                family's needs.
+                I'll reach out personally within 1–2 days to talk about your family's needs.
               </p>
             </div>
           ) : (
-            <div className="grid gap-5 sm:grid-cols-2">
-              <Field label="First Name" name="firstName" required />
-              <Field label="Last Name" name="lastName" required />
-              <Field label="Email" name="email" type="email" required />
-              <Field label="Phone Number" name="phone" type="tel" />
+            <fieldset className="grid gap-5 sm:grid-cols-2" disabled={state.submitting}>
+              <legend className="sr-only">Consultation request details</legend>
+              <input
+                type="hidden"
+                name="_subject"
+                value="New consultation request from Binky & Blanket Care"
+              />
+              <div id={formErrorId} className="sm:col-span-2" aria-live="polite">
+                <ValidationError
+                  errors={state.errors}
+                  className="rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
+                />
+              </div>
+              <Field
+                label="First Name"
+                name="firstName"
+                autoComplete="given-name"
+                invalid={hasFieldError("firstName")}
+                error={
+                  <ValidationError
+                    field="firstName"
+                    errors={state.errors}
+                    className="mt-2 text-sm text-destructive"
+                  />
+                }
+                required
+              />
+              <Field
+                label="Last Name"
+                name="lastName"
+                autoComplete="family-name"
+                invalid={hasFieldError("lastName")}
+                error={
+                  <ValidationError
+                    field="lastName"
+                    errors={state.errors}
+                    className="mt-2 text-sm text-destructive"
+                  />
+                }
+                required
+              />
+              <Field
+                label="Email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                inputMode="email"
+                invalid={hasFieldError("email")}
+                error={
+                  <ValidationError
+                    field="email"
+                    errors={state.errors}
+                    className="mt-2 text-sm text-destructive"
+                  />
+                }
+                required
+              />
+              <Field
+                label="Phone Number"
+                name="phone"
+                type="tel"
+                autoComplete="tel"
+                inputMode="tel"
+                invalid={hasFieldError("phone")}
+                error={
+                  <ValidationError
+                    field="phone"
+                    errors={state.errors}
+                    className="mt-2 text-sm text-destructive"
+                  />
+                }
+              />
               <Field
                 label="Location / Neighborhood"
                 name="location"
+                autoComplete="address-level2"
                 className="sm:col-span-2"
+                invalid={hasFieldError("location")}
+                error={
+                  <ValidationError
+                    field="location"
+                    errors={state.errors}
+                    className="mt-2 text-sm text-destructive"
+                  />
+                }
               />
               <Field
                 label="Expected Due Date or Baby's Age"
                 name="due"
                 className="sm:col-span-2"
+                invalid={hasFieldError("due")}
+                error={
+                  <ValidationError
+                    field="due"
+                    errors={state.errors}
+                    className="mt-2 text-sm text-destructive"
+                  />
+                }
               />
 
               <div className="sm:col-span-2">
-                <label className="block text-sm font-medium text-accent mb-2">
+                <label htmlFor="service" className="block text-sm font-medium text-accent mb-2">
                   Which service are you interested in?{" "}
-                  <span className="text-accent/60">*</span>
+                  <span className="text-accent/60" aria-hidden="true">
+                    *
+                  </span>
+                  <span className="sr-only">Required</span>
                 </label>
+                <p id={serviceHintId} className="sr-only">
+                  Select the service that best matches your current support needs.
+                </p>
                 <select
+                  id="service"
                   required
                   defaultValue=""
                   name="service"
+                  aria-describedby={`${serviceHintId} ${serviceErrorId}`}
+                  aria-invalid={hasFieldError("service") || undefined}
                   className="w-full rounded-2xl bg-background border border-border px-5 py-3.5 text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition"
                 >
                   <option value="" disabled>
@@ -734,35 +828,60 @@ function Contact() {
                   <option>Intensive Postpartum Care</option>
                   <option>Not Sure Yet</option>
                 </select>
+                <div id={serviceErrorId} aria-live="polite">
+                  <ValidationError
+                    field="service"
+                    errors={state.errors}
+                    className="mt-2 text-sm text-destructive"
+                  />
+                </div>
               </div>
 
               <div className="sm:col-span-2">
-                <label className="block text-sm font-medium text-accent mb-2">
+                <label htmlFor="message" className="block text-sm font-medium text-accent mb-2">
                   How can I support your family?{" "}
-                  <span className="text-accent/60">*</span>
+                  <span className="text-accent/60" aria-hidden="true">
+                    *
+                  </span>
+                  <span className="sr-only">Required</span>
                 </label>
+                <p id={messageHintId} className="sr-only">
+                  Share details about your family, timing, and the kind of postpartum or newborn
+                  care you are looking for.
+                </p>
                 <textarea
+                  id="message"
                   required
                   name="message"
                   rows={5}
+                  aria-describedby={`${messageHintId} ${messageErrorId}`}
+                  aria-invalid={hasFieldError("message") || undefined}
                   placeholder="Share a little about your family, your hopes, and any questions…"
-                  className="w-full rounded-2xl bg-background border border-border px-5 py-3.5 text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition resize-none"
+                  className="w-full rounded-2xl bg-background border border-border px-5 py-3.5 text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition resize-y min-h-32"
                 />
+                <div id={messageErrorId} aria-live="polite">
+                  <ValidationError
+                    field="message"
+                    errors={state.errors}
+                    className="mt-2 text-sm text-destructive"
+                  />
+                </div>
               </div>
 
               <div className="sm:col-span-2 mt-2">
                 <button
                   type="submit"
-                  className="w-full sm:w-auto inline-flex justify-center items-center gap-2 rounded-full bg-primary text-primary-foreground px-8 py-4 text-sm font-semibold shadow-[var(--shadow-cozy)] hover:opacity-90 transition"
+                  disabled={state.submitting}
+                  className="w-full sm:w-auto inline-flex justify-center items-center gap-2 rounded-full bg-primary text-primary-foreground px-8 py-4 text-sm font-semibold shadow-[var(--shadow-cozy)] hover:opacity-90 transition disabled:cursor-not-allowed disabled:opacity-70"
                 >
-                  Request Consultation
+                  {state.submitting ? "Sending Request..." : "Request Consultation"}
                   <ChevronRight className="h-4 w-4" />
                 </button>
-                <p className="mt-3 text-xs text-muted-foreground">
+                <p id={formNoteId} className="mt-3 text-xs text-muted-foreground">
                   * Required fields. Your information stays private.
                 </p>
               </div>
-            </div>
+            </fieldset>
           )}
         </form>
       </div>
@@ -776,28 +895,52 @@ function Field({
   type = "text",
   required,
   className = "",
+  autoComplete,
+  inputMode,
+  invalid,
+  error,
 }: {
   label: string;
   name: string;
   type?: string;
   required?: boolean;
   className?: string;
+  autoComplete?: string;
+  inputMode?: "none" | "text" | "tel" | "url" | "email" | "numeric" | "decimal" | "search";
+  invalid?: boolean;
+  error?: ReactNode;
 }) {
+  const errorId = `${name}-error`;
+
   return (
     <div className={className}>
-      <label
-        htmlFor={name}
-        className="block text-sm font-medium text-accent mb-2"
-      >
-        {label} {required && <span className="text-accent/60">*</span>}
+      <label htmlFor={name} className="block text-sm font-medium text-accent mb-2">
+        {label}{" "}
+        {required && (
+          <>
+            <span className="text-accent/60" aria-hidden="true">
+              *
+            </span>
+            <span className="sr-only">Required</span>
+          </>
+        )}
       </label>
       <input
         id={name}
         name={name}
         type={type}
         required={required}
+        autoComplete={autoComplete}
+        inputMode={inputMode}
+        aria-describedby={error ? errorId : undefined}
+        aria-invalid={invalid || undefined}
         className="w-full rounded-2xl bg-background border border-border px-5 py-3.5 text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition"
       />
+      {error && (
+        <div id={errorId} aria-live="polite">
+          {error}
+        </div>
+      )}
     </div>
   );
 }
@@ -808,14 +951,15 @@ function Footer() {
     <footer className="border-t border-border/60 bg-secondary/30">
       <div className="mx-auto max-w-7xl px-5 sm:px-8 py-14 grid gap-10 md:grid-cols-3">
         <div>
-          <div className="flex items-center gap-2.5">
-            <span className="grid h-10 w-10 place-items-center rounded-full bg-primary/30 ring-1 ring-primary/40">
-              <Heart className="h-5 w-5 text-accent" fill="currentColor" />
-            </span>
-            <span className="font-display text-xl text-accent">
-              Binky &amp; Blanket Care
-            </span>
-          </div>
+          <img
+            src={footerLogo}
+            alt="Binky and Blanket New Born Care"
+            className="h-auto w-40 rounded-2xl bg-card object-contain ring-1 ring-border/60 sm:w-48"
+            width={2000}
+            height={2000}
+            loading="lazy"
+            decoding="async"
+          />
           <p className="mt-4 font-display italic text-accent/80">
             "Soft support for new beginnings"
           </p>
@@ -843,8 +987,8 @@ function Footer() {
         <div>
           <h4 className="font-display text-lg text-accent">Get in touch</h4>
           <p className="mt-4 text-sm text-foreground/75">
-            Ready when you are. Reach out for a free consultation and we'll
-            find the right fit for your family.
+            Ready when you are. Reach out for a free consultation and we'll find the right fit for
+            your family.
           </p>
           <a
             href="#contact"
