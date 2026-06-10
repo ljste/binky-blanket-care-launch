@@ -92,20 +92,26 @@ function Header() {
 
   return (
     <header className="sticky top-0 z-50 backdrop-blur-md bg-background/80 border-b border-border/60">
-      <div className="mx-auto max-w-7xl px-5 sm:px-8 h-18 py-4 flex items-center justify-between gap-4">
-        <a href="#home" className="flex items-center gap-2.5 min-w-0">
-          <span className="grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-full bg-primary/30 ring-1 ring-primary/40">
+      <div className="relative mx-auto flex min-h-28 max-w-7xl items-center justify-center gap-4 px-5 py-3 sm:px-8 md:h-18 md:min-h-0 md:justify-between md:py-4">
+        <a
+          href="#home"
+          className="flex min-w-0 flex-col items-center gap-1.5 md:flex-row md:gap-2.5"
+        >
+          <span className="grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-full bg-primary/30 ring-1 ring-primary/40 md:h-10 md:w-10">
             <img
               src={logoMark}
               alt=""
-              className="h-9 w-9 object-contain"
+              className="h-14 w-14 object-contain md:h-9 md:w-9"
               width={840}
               height={748}
               decoding="async"
               aria-hidden="true"
             />
           </span>
-          <span className="font-display text-lg sm:text-xl tracking-tight text-accent truncate">
+          <span className="font-display text-xl tracking-tight text-accent md:hidden">
+            Binky &amp; Blanket.
+          </span>
+          <span className="hidden font-display text-xl tracking-tight text-accent md:block md:truncate">
             Binky &amp; Blanket Care
           </span>
         </a>
@@ -132,7 +138,7 @@ function Header() {
           aria-controls={mobileMenuId}
           aria-expanded={open}
           aria-label={open ? "Close menu" : "Open menu"}
-          className="md:hidden rounded-full p-2 hover:bg-secondary"
+          className="absolute right-5 top-1/2 -translate-y-1/2 rounded-full p-2 hover:bg-secondary md:hidden"
           onClick={() => setOpen((v) => !v)}
         >
           {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
