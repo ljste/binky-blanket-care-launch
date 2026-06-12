@@ -97,7 +97,7 @@ function Header() {
           href="#home"
           className="flex min-w-0 flex-col items-center gap-1.5 md:flex-row md:gap-2.5"
         >
-          <span className="grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-full bg-primary/30 ring-1 ring-primary/40 md:h-10 md:w-10">
+          <span className="grid h-16 w-16 shrink-0 place-items-center overflow-hidden md:h-10 md:w-10">
             <img
               src={logoMark}
               alt=""
@@ -182,10 +182,13 @@ function Hero() {
 
       <div className="mx-auto max-w-7xl px-5 sm:px-8 pt-14 pb-20 lg:pt-24 lg:pb-28 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
         <div>
-          <span className="inline-flex max-w-full items-center gap-2 rounded-full bg-secondary px-4 py-1.5 text-xs uppercase tracking-[0.18em] text-accent/80">
-            <Sparkles className="h-3.5 w-3.5" />
-            <span className="leading-relaxed">Soft support for new beginnings</span>
-          </span>
+          <div className="flex max-w-xl flex-wrap items-center gap-3">
+            <span className="inline-flex max-w-full items-center gap-2 rounded-full bg-secondary px-4 py-1.5 text-xs uppercase tracking-[0.18em] text-accent/80">
+              <Sparkles className="h-3.5 w-3.5" />
+              <span className="leading-relaxed">Soft support for new beginnings</span>
+            </span>
+            <PlayfulBinkyCharm />
+          </div>
           <h1 className="mt-6 font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] text-accent">
             Welcome to <span className="italic text-foreground">Binky &amp; Blanket Care</span>
           </h1>
@@ -252,6 +255,18 @@ function Hero() {
         </div>
       </div>
     </section>
+  );
+}
+
+function PlayfulBinkyCharm() {
+  return (
+    <span className="binky-charm" aria-hidden="true">
+      <span className="binky-charm__sparkle binky-charm__sparkle--one" />
+      <span className="binky-charm__sparkle binky-charm__sparkle--two" />
+      <span className="binky-charm__ring" />
+      <span className="binky-charm__guard" />
+      <span className="binky-charm__nipple" />
+    </span>
   );
 }
 
@@ -336,7 +351,7 @@ function Services() {
       icon: <Moon className="h-6 w-6" />,
       title: "Overnight Newborn Care",
       price: "$45–50/hour",
-      minimum: "9-hour shift · 3 shifts per week",
+      minimum: "9-hour shift",
       description:
         "Overnight support allows parents to rest while I care for the baby throughout the night.",
       includes: [
@@ -353,7 +368,7 @@ function Services() {
       icon: <Sun className="h-6 w-6" />,
       title: "Daytime Support",
       price: "$40/hour",
-      minimum: "9-hour shift · 3 shifts per week",
+      minimum: "9-hour shift",
       description:
         "Daytime care is perfect for families who need recovery support, extra hands, or reassurance during the day.",
       includes: [
@@ -960,7 +975,7 @@ function Footer() {
           <img
             src={footerLogo}
             alt="Binky and Blanket New Born Care"
-            className="h-auto w-40 rounded-2xl bg-card object-contain ring-1 ring-border/60 sm:w-48"
+            className="h-auto w-40 object-contain sm:w-48"
             width={2000}
             height={2000}
             loading="lazy"
