@@ -77,6 +77,7 @@ function Home() {
         <HowICanHelp />
         <Services />
         <About />
+        <Reviews />
         <FAQ />
         <Contact />
       </main>
@@ -195,6 +196,9 @@ function Hero() {
           <p className="mt-5 text-lg text-foreground/80 max-w-xl">
             Soft, steady postpartum and newborn care for families who deserve rest, reassurance, and
             support.
+          </p>
+          <p  className="mt-3 text-base font-semibold text-accent">
+            Serving the Greater Philadelphia Area
           </p>
           <div className="mt-6 space-y-4 text-foreground/75 max-w-xl leading-relaxed">
             <p>
@@ -585,7 +589,60 @@ function About() {
     </section>
   );
 }
+/* ---------------- Reviews ---------------- */
+function Reviews() {
+  const reviews = [
+    {
+      quote:
+        "Kamilla was an incredible support during our postpartum journey. Her calm presence and newborn expertise gave us confidence and much-needed rest.",
+      name: "Sarah M.",
+    },
+    {
+      quote:
+        "Our family felt cared for from day one. Kamilla was reliable, compassionate, and wonderful with our baby.",
+      name: "Jennifer R.",
+    },
+    {
+      quote:
+        "We couldn't have asked for a better postpartum caregiver. Her support made such a difference during those first weeks.",
+      name: "Emily T.",
+    },
+  ];
 
+  return (
+    <section id="reviews" className="py-20 lg:py-28">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+        <div className="text-center">
+          <span className="text-xs uppercase tracking-[0.18em] text-accent/70">
+            Testimonials
+          </span>
+          <h2 className="mt-3 font-display text-3xl sm:text-4xl lg:text-5xl text-accent">
+            Kind Words From Families
+          </h2>
+        </div>
+
+        <div className="mt-12 grid gap-6 md:grid-cols-3">
+          {reviews.map((review) => (
+            <div
+              key={review.name}
+              className="rounded-[2rem] bg-card p-8 ring-1 ring-border/60 shadow-[var(--shadow-soft)]"
+            >
+              <div className="text-2xl mb-4">★★★★★</div>
+
+              <p className="italic text-foreground/80">
+                "{review.quote}"
+              </p>
+
+              <p className="mt-4 font-semibold text-accent">
+                — {review.name}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
 /* ---------------- FAQ ---------------- */
 function FAQ() {
   const items = [
