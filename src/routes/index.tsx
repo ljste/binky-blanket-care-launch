@@ -608,10 +608,23 @@ function Reviews() {
         "We couldn't have asked for a better postpartum caregiver. Her support made such a difference during those first weeks.",
       name: "Emily T.",
     },
+    {
+      quote:
+        "Kamilla brought such warmth and calm to our home. As first-time parents we were nervous, but she made us feel completely at ease.",
+      name: "Melissa K.",
+    },
+    {
+      quote:
+        "Having Kamilla overnight was a game changer. We actually slept and woke up feeling human again. Cannot recommend her enough.",
+      name: "Rachel & Tom B.",
+    },
   ];
 
+  // Duplicate for seamless infinite loop
+  const doubled = [...reviews, ...reviews];
+
   return (
-    <section id="reviews" className="py-20 lg:py-28">
+    <section id="reviews" className="py-20 lg:py-28 overflow-hidden">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="text-center">
           <span className="text-xs uppercase tracking-[0.18em] text-accent/70">
@@ -621,22 +634,22 @@ function Reviews() {
             Kind Words From Families
           </h2>
         </div>
+      </div>
 
-        <div className="mt-12 grid gap-6 md:grid-cols-3">
-          {reviews.map((review) => (
+      <div className="mt-12 relative">
+        {/* Fade edges */}
+        <div className="pointer-events-none absolute left-0 top-0 h-full w-24 z-10 bg-gradient-to-r from-background to-transparent" />
+        <div className="pointer-events-none absolute right-0 top-0 h-full w-24 z-10 bg-gradient-to-l from-background to-transparent" />
+
+        <div className="flex gap-6 w-max animate-marquee hover:[animation-play-state:paused]">
+          {doubled.map((review, i) => (
             <div
-              key={review.name}
-              className="rounded-[2rem] bg-card p-8 ring-1 ring-border/60 shadow-[var(--shadow-soft)]"
+              key={i}
+              className="w-80 shrink-0 rounded-[2rem] bg-card p-8 ring-1 ring-border/60 shadow-[var(--shadow-soft)]"
             >
               <div className="text-2xl mb-4">★★★★★</div>
-
-              <p className="italic text-foreground/80">
-                "{review.quote}"
-              </p>
-
-              <p className="mt-4 font-semibold text-accent">
-                — {review.name}
-              </p>
+              <p className="italic text-foreground/80">"{review.quote}"</p>
+              <p className="mt-4 font-semibold text-accent">— {review.name}</p>
             </div>
           ))}
         </div>
@@ -644,6 +657,20 @@ function Reviews() {
     </section>
   );
 }
+Then you need to add the animation to your tailwind.config (or whatever config file controls your Tailwind setup — likely tailwind.config.ts or inside vite.config.ts). Add this:
+tstheme: {
+  extend: {
+    keyframes: {
+      marquee: {
+        "0%": { transform: "translateX(0)" },
+        "100%": { transform: "translateX(-50%)" },
+      },
+    },
+    animation: {
+      marquee: "marquee 30s linear infinite",
+    },
+  },
+},
 /* ---------------- FAQ ---------------- */
 function FAQ() {
   const items = [
