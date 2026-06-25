@@ -199,7 +199,7 @@ function Hero() {
             support.
           </p>
           <p  className="mt-3 text-base font-semibold text-accent">
-            Serving the Greater Philadelphia Area
+            Serving PA, NJ, and NYC
           </p>
           <div className="mt-6 space-y-4 text-foreground/75 max-w-xl leading-relaxed">
             <p>
