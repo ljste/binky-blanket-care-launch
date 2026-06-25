@@ -19,6 +19,7 @@ import contactImage from "@/assets/IMG_3764.webp";
 import heroImage from "@/assets/IMG_3759.webp";
 import footerLogo from "@/assets/logo.webp";
 import logoMark from "@/assets/logo-no-text.webp";
+import certificateBadge from "@/assets/Image.jpeg";
 
 const FORMSPREE_FORM_ID = "xpqejpql";
 const FORMSPREE_ENDPOINT = `https://formspree.io/f/${FORMSPREE_FORM_ID}`;
@@ -527,6 +528,14 @@ function About() {
                 </li>
               ))}
             </ul>
+            <div className="mt-6 border-t border-border/40 pt-5>
+              <img
+                src={certificationBadge}
+                alt="Certified Postpartum Doula - Cornerstone Birthwork Training"
+                className="mx-auto max-h-40 w-auto rounded-xl"
+                loading="lazy"
+              />
+          </div>
           </div>
         </div>
 
